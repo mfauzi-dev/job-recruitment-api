@@ -120,6 +120,12 @@ git clone https://github.com/mfauzi-dev/job-recruitment-api.git
     npm run dev
     ```
 
+6. **Jalankan scripts seeder untuk roles dan admin**
+
+    ```bash
+    npm run dev
+    ```
+
 ## Teknologi
 
 - Express.js
