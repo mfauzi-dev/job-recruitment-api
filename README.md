@@ -56,10 +56,35 @@ API ini cocok digunakan sebagai **portfolio backend developer** karena fokus pad
 - Environment-based configuration menggunakan dotenv
 - Sequelize ORM dengan MySQL
 
+## 📁 Uploads Directory Setup
+
+Project ini menggunakan folder `uploads/` untuk menyimpan file hasil upload seperti:
+
+- CV (curriculum vitae)
+- Cover letter
+- Company logo
+- Company thumbnail
+
+Folder `uploads/` **tidak disertakan di dalam repository** demi keamanan dan kebersihan repo.
+
+### Buat folder `uploads` secara manual setelah clone:
+
+```bash
+mkdir uploads
+mkdir uploads/curriculumVitae
+mkdir uploads/coverLetter
+mkdir uploads/logo
+mkdir uploads/thumbnail
+```
+
+## File Upload
+
+Folder `uploads/` digunakan untuk menyimpan file hasil upload secara lokal dan tidak disertakan di dalam repository.
+
 ## **Clone repository**
 
 ```bash
-git clone https://github.com/mfauzi-dev/user-authentication-api-v2.git
+git clone https://github.com/mfauzi-dev/job-recruitment-api.git
 ```
 
 ## **Setup Project Baru**
@@ -67,7 +92,7 @@ git clone https://github.com/mfauzi-dev/user-authentication-api-v2.git
 1. **Rename folder sesuai project baru**
 
     ```bash
-    mv user-authentication-api-v2 my-new-project
+    mv job-recruitment-api my-new-project
     cd my-new-project
     ```
 
