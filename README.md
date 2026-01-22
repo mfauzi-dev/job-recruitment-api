@@ -51,7 +51,7 @@ API ini cocok digunakan sebagai **portfolio backend developer** karena fokus pad
 
 ### Project Architecture
 
-- Modular folder structure (controller, service, route, middleware, utils)
+- Modular folder structure (controller, route, middleware, utils)
 - Centralized error handling
 - Environment-based configuration menggunakan dotenv
 - Sequelize ORM dengan MySQL
