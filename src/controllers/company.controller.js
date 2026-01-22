@@ -2,15 +2,9 @@ import path from "path";
 import { logger } from "../config/logger.js";
 import { ResponseError } from "../middleware/error.middleware.js";
 import Company from "../models/Company.js";
-import User from "../models/User.js";
-import {
-    createCompanyValidation,
-    updateCompanyValidation,
-} from "../validations/company.validation.js";
+import { createCompanyValidation, updateCompanyValidation } from "../validations/company.validation.js";
 import { validated } from "../validations/validation.js";
 import fs from "fs";
-import sequelize from "../config/database.js";
-import Role from "../models/Role.js";
 
 export const createCompany = async (req, res) => {
     try {
@@ -132,10 +126,7 @@ export const updateCompany = async (req, res) => {
 
         if (req.files.thumbnail && req.files.thumbnail.length > 0) {
             if (company.thumbnailUrl) {
-                const oldPath = path.join(
-                    "uploads/thumbnail",
-                    company.thumbnailUrl,
-                );
+                const oldPath = path.join("uploads/thumbnail", company.thumbnailUrl);
                 if (fs.existsSync(oldPath)) {
                     fs.unlinkSync(oldPath);
                 }
@@ -194,10 +185,7 @@ export const deleteCompany = async (req, res) => {
         }
 
         if (company.thumbnailUrl) {
-            const thumbnailPath = path.join(
-                "uploads/thumbnail",
-                company.thumbnailUrl,
-            );
+            const thumbnailPath = path.join("uploads/thumbnail", company.thumbnailUrl);
             if (fs.existsSync(thumbnailPath)) {
                 fs.unlinkSync(thumbnailPath);
             }
@@ -214,96 +202,6 @@ export const deleteCompany = async (req, res) => {
         });
     } catch (error) {
         logger.error("Delete company failed", error);
-        res.status(400).json({
-            success: false,
-            message: error.message,
-        });
-    }
-};
-
-export const viewApplicants = async (req, res) => {
-    try {
-        const userId = req.user.id;
-
-        const company = await Company.findOne({
-            where: {
-                userId,
-            },
-        });
-        if (!company) {
-            throw new ResponseError(
-                404,
-                "Perusahaan tidak ditemukan untuk user ini",
-            );
-        }
-
-        const companyId = company.id;
-
-        const { page = 1, perPage = 10 } = req.query;
-
-        const offset = (parseInt(page) - 1) * parseInt(perPage);
-
-        const limit = parseInt(perPage);
-
-        const data = await sequelize.query(
-            `
-            SELECT j.id, j.title as jobTitle, 
-                   a.id as applicationId, a.status, a.coverLetterURL,
-                   u.id as candidateId, u.name as candidateName, u.email, 
-            CASE
-            WHEN a.coverLetterURL IS NOT NULL THEN CONCAT('http://localhost:${process.env.APP_PORT}/uploads/coverLetter/', a.coverLetterURL) 
-                ELSE NULL
-            END as coverLetterPublicUrl
-            FROM jobs j
-            LEFT JOIN applications a ON a.jobId = j.id
-            LEFT JOIN users u ON a.userId = u.id
-            WHERE j.companyId = :companyId
-            ORDER BY j.createdAt DESC, a.createdAt DESC
-            LIMIT :limit OFFSET :offset
-            `,
-            {
-                replacements: {
-                    companyId,
-                    limit,
-                    offset,
-                },
-                type: sequelize.QueryTypes.SELECT,
-            },
-        );
-
-        if (data.length === 0) {
-            throw new ResponseError(404, "Pelamar belum ada.");
-        }
-
-        const [countResult] = await sequelize.query(
-            `
-            SELECT COUNT(*) AS total
-            FROM jobs j
-            LEFT JOIN applications a ON a.jobId = j.id
-            WHERE j.companyId = :companyId
-            `,
-            {
-                replacements: {
-                    companyId,
-                },
-                type: sequelize.QueryTypes.SELECT,
-            },
-        );
-
-        const total = Number(countResult.total || 0);
-
-        logger.info("Get view applicants successfully");
-        return res.status(200).json({
-            success: true,
-            message: "Semua post berhasil didapatkan.",
-            currentPage: parseInt(page),
-            perPage: limit,
-            totalPages: Math.ceil(total / limit),
-            totalItems: total,
-            data,
-        });
-    } catch (error) {
-        logger.error("View Applicant failed", error);
         res.status(400).json({
             success: false,
             message: error.message,
