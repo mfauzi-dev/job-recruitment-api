@@ -123,7 +123,8 @@ git clone https://github.com/mfauzi-dev/job-recruitment-api.git
 6. **Jalankan scripts seeder untuk roles dan admin**
 
     ```bash
-    npm run dev
+    node scripts/createRoles.js
+    node scripts/createAdmin.js
     ```
 
 ## Teknologi
